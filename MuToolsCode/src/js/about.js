@@ -26,6 +26,13 @@ function initDisclaimerModal() {
 
 const CHANGELOG_DATA = [
   {
+    version: "Tauri-v1.1.0",
+    date: "2026-08-31",
+    items: [
+      { text: "修复V6版本的startupImageDir优化", type: "fix" }
+    ]
+  },
+  {
     version: "Tauri-v1.0.0",
     date: "2026-08-28",
     items: [

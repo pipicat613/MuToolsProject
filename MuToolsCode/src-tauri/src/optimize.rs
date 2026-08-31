@@ -200,32 +200,31 @@ pub fn disable_startup_image() -> Result<String, String> {
     let appdata_dir = get_appdata_dir_from_info(&info)?;
     let netease_appdata = PathBuf::from(&appdata_dir).join("Netease");
 
+    // 兼容各版本启动图存储位置
     let candidates: Vec<PathBuf> = vec![
         netease_appdata.join("MuMuPlayer").join("startupImage"),
         netease_appdata.join("MuMuPlayer-12.0").join("startupImage"),
+        netease_appdata.join("MuMuPlayer").join("data").join("startupImage"),
+        netease_appdata.join("MuMuPlayer-12.0").join("data").join("startupImage"),
     ];
 
-    let mut done = false;
+    let mut handled = 0usize;
     for candidate in &candidates {
-        if candidate.exists() {
-            if candidate.is_dir() {
-                fs::remove_dir_all(candidate).map_err(|e| format!("删除 startupImage 目录失败: {}", e))?;
-            } else if candidate.is_file() {
-                // Already a file, keep as is
-                done = true;
-                continue;
-            }
-            ensure_parent_dir(candidate)?;
-            fs::write(candidate, b"").map_err(|e| format!("创建 startupImage 文件失败: {}", e))?;
-            done = true;
+        if candidate.is_dir() {
+            fs::remove_dir_all(candidate).map_err(|e| format!("删除 startupImage 目录失败 ({}): {}", candidate.display(), e))?;
+        } else if candidate.is_file() {
+            // 已是文件
+            handled += 1;
+            continue;
         }
+        // 目录不存在或已被删除：创建空文件占位
+        ensure_parent_dir(candidate)?;
+        fs::write(candidate, b"").map_err(|e| format!("创建 startupImage 文件失败 ({}): {}", candidate.display(), e))?;
+        handled += 1;
     }
 
-    // Also try to write if neither existed
-    if !done {
-        let fallback = candidates[0].clone();
-        ensure_parent_dir(&fallback)?;
-        fs::write(&fallback, b"").map_err(|e| format!("创建 startupImage 文件失败: {}", e))?;
+    if handled == 0 {
+        return Err("未找到任何 startupImage 目录".to_string());
     }
 
     Ok("启动图已禁用".to_string())
@@ -240,17 +239,24 @@ pub fn restore_startup_image() -> Result<String, String> {
     let candidates: Vec<PathBuf> = vec![
         netease_appdata.join("MuMuPlayer").join("startupImage"),
         netease_appdata.join("MuMuPlayer-12.0").join("startupImage"),
+        netease_appdata.join("MuMuPlayer").join("data").join("startupImage"),
+        netease_appdata.join("MuMuPlayer-12.0").join("data").join("startupImage"),
     ];
 
+    let mut restored = 0usize;
     for candidate in &candidates {
         if candidate.exists() && candidate.is_file() {
-            fs::remove_file(candidate).map_err(|e| format!("删除 startupImage 文件失败: {}", e))?;
-            fs::create_dir_all(candidate).map_err(|e| format!("创建 startupImage 目录失败: {}", e))?;
-            return Ok("启动图已恢复".to_string());
+            fs::remove_file(candidate).map_err(|e| format!("删除 startupImage 文件失败 ({}): {}", candidate.display(), e))?;
+            fs::create_dir_all(candidate).map_err(|e| format!("创建 startupImage 目录失败 ({}): {}", candidate.display(), e))?;
+            restored += 1;
         }
     }
 
-    Err("未找到 startupImage 文件，无需恢复".to_string())
+    if restored == 0 {
+        Err("未找到 startupImage 文件，无需恢复".to_string())
+    } else {
+        Ok(format!("启动图已恢复，共处理 {} 个位置", restored))
+    }
 }
 
 // 导入 Data 分区多开优化包
