@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MuTools</title>
+  <script type="module" src="/main.js" defer></script>
+</head>
+
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <img src="./assets/images/icon.png" alt="MuTools" class="sidebar-icon" />
+        <h2>MuTools</h2>
+      </div>
+      <nav id="nav">
+        <button class="nav-item active" data-page="home">
+          <span>主页</span>
+        </button>
+        <button class="nav-item" data-page="install">
+          <span>MuMu安装</span>
+        </button>
+        <button class="nav-item" data-page="packages">
+          <span>资源包管理</span>
+        </button>
+        <button class="nav-item" data-page="optimize">
+          <span>MuMu优化</span>
+        </button>
+        <button class="nav-item" data-page="mumu-info">
+          <span>MuMu信息</span>
+        </button>
+        <button class="nav-item" data-page="logs">
+          <span>日志</span>
+        </button>
+        <button class="nav-item" data-page="settings">
+          <span>设置</span>
+        </button>
+        <button class="nav-item" data-page="help">
+          <span>帮助</span>
+        </button>
+        <button class="nav-item" data-page="about">
+          <span>关于</span>
+        </button>
+      </nav>
+    </aside>
+    <div id="toast-container" class="toast-container"></div>
+    <main id="content">
+      <div id="page-home" class="page active">
+        <div class="welcome">
+          <h1>欢迎使用 MuTools</h1>
+          <p>一站式 MuMu12 模拟器安装与优化工具</p>
+          <div class="home-free-badge">免费资源 禁止售卖</div>
+          <div class="daily-quote">
+            <span id="daily-quote-text" class="daily-quote-text"></span>
+          </div>
+          <div class="home-disclaimer-hint">
+            请先阅读<a id="link-home-disclaimer" href="javascript:void(0)">免责声明</a>，继续使用视为同意
+          </div>
+        </div>
+      </div>
+      <div id="page-install" class="page">
+        <h2>安装 MuMu 模拟器</h2>
+        <div class="form-group">
+          <label for="select-version">选择版本</label>
+          <select id="select-version" class="form-select">
+            <option value="MuMu12-V4">MuMu12-V4</option>
+            <option value="MuMu12-V5">MuMu12-V5</option>
+            <option value="MuMu12-V6">MuMu12-V6</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="select-method">安装方式</label>
+          <select id="select-method" class="form-select">
+            <option value="online">在线安装</option>
+            <option value="local">本地安装</option>
+          </select>
+        </div>
+        <div class="form-group" id="path-group">
+          <label for="install-path">安装包路径</label>
+          <div class="input-with-btn">
+            <input type="text" id="install-path" placeholder="输入安装包路径或下载链接" />
+            <button id="btn-browse-file" class="btn-secondary" style="display:none">浏览</button>
+            <button id="btn-path-action" class="btn-secondary" style="display:none">获取</button>
+          </div>
+        </div>
+        <div class="form-group" id="v6-links-group" style="display:none">
+          <label>V6 组件链接</label>
+          <div class="v6-link-row">
+            <span class="v6-link-label">NXMAIN</span>
+            <input type="text" id="v6-link-nxmain" class="form-input" placeholder="输入 NXMAIN 下载链接" />
+            <button id="btn-v6-browse-nxmain" class="btn-secondary btn-sm" style="display:none">浏览</button>
+          </div>
+          <div class="v6-link-row">
+            <span class="v6-link-label">NEMUX</span>
+            <input type="text" id="v6-link-nemux" class="form-input" placeholder="输入 NEMUX 下载链接" />
+            <button id="btn-v6-browse-nemux" class="btn-secondary btn-sm" style="display:none">浏览</button>
+          </div>
+          <div class="v6-link-row">
+            <span class="v6-link-label">MUMU15</span>
+            <input type="text" id="v6-link-mumu15" class="form-input" placeholder="输入 MUMU15 下载链接" />
+            <button id="btn-v6-browse-mumu15" class="btn-secondary btn-sm" style="display:none">浏览</button>
+          </div>
+          <div class="v6-link-actions" id="v6-fetch-actions">
+            <button id="btn-v6-fetch" class="btn-secondary">获取</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="install-dir">安装目录</label>
+          <div class="input-with-btn">
+            <input type="text" id="install-dir" value="D:\Program Files\Netease\MuMu" placeholder="选择安装目录" />
+            <button id="btn-browse-dir" class="btn-secondary">浏览</button>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button id="btn-install" class="btn-primary">开始安装</button>
+        </div>
+        <div class="install-progress-bar" id="install-progress-bar" style="display:none">
+          <div class="install-progress-header">
+            <span class="install-progress-task" id="install-progress-task">准备中</span>
+            <span class="install-progress-percent" id="install-progress-percent">0%</span>
+          </div>
+          <div class="install-progress-track">
+            <div class="install-progress-fill" id="install-progress-fill" style="width:0%"></div>
+          </div>
+          <div class="install-progress-detail" id="install-progress-detail"></div>
+          <div class="install-progress-actions" id="install-progress-actions" style="display:none">
+            <button id="btn-pause-download" class="btn-secondary btn-sm">暂停</button>
+            <button id="btn-cancel-download" class="btn-secondary btn-danger btn-sm">取消下载</button>
+          </div>
+        </div>
+      </div>
+      <div id="page-packages" class="page">
+        <h2>资源包管理</h2>
+
+        <div class="packages-actions-bar">
+          <button id="btn-pkg-install" class="btn-primary">安装资源包</button>
+          <button id="btn-pkg-refresh" class="btn-secondary">刷新列表</button>
+          <button id="btn-pkg-open-folder" class="btn-secondary">打开资源文件夹</button>
+        </div>
+
+        <div id="pkg-status" class="status-box"></div>
+
+        <div id="pkg-list" class="pkg-list">
+          <div class="pkg-empty">暂无资源包</div>
+        </div>
+      </div>
+
+      <!-- 安装资源包模态框 -->
+      <div id="modal-install-overlay" class="modal-overlay" style="display:none">
+        <div class="modal">
+          <div class="modal-header">
+            <h3>安装资源包</h3>
+            <button id="btn-modal-close" class="modal-close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="modal-install-method">安装方式</label>
+              <select id="modal-install-method" class="form-select">
+                <option value="local">本地安装</option>
+                <option value="online">在线安装</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="modal-install-path">本地文件路径</label>
+              <div class="input-with-btn">
+                <input type="text" id="modal-install-path" class="form-input" placeholder="输入本地文件路径" />
+                <button id="btn-modal-browse-file" class="btn-secondary">浏览</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="modal-install-url">远程 URL</label>
+              <input type="text" id="modal-install-url" class="form-input" placeholder="" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="btn-modal-cancel" class="btn-secondary">取消</button>
+            <button id="btn-modal-install" class="btn-primary">开始安装</button>
+          </div>
+        </div>
+      </div>
+      <!-- 删除资源包确认模态框 -->
+      <div id="modal-delete-overlay" class="modal-overlay" style="display:none">
+        <div class="modal">
+          <div class="modal-header">
+            <h3>确认删除</h3>
+            <button id="btn-delete-close" class="modal-close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <p id="modal-delete-message"></p>
+          </div>
+          <div class="modal-footer">
+            <button id="btn-delete-cancel" class="btn-secondary">取消</button>
+            <button id="btn-delete-confirm" class="btn-primary btn-danger">确认删除</button>
+          </div>
+        </div>
+      </div>
+      <!-- 资源包详情模态框 -->
+      <div id="modal-detail-overlay" class="modal-overlay" style="display:none">
+        <div class="modal">
+          <div class="modal-header">
+            <h3 id="modal-detail-title">资源包详情</h3>
+            <button id="btn-modal-detail-close" class="modal-close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div id="modal-detail-content" class="detail-content"></div>
+          </div>
+          <div class="modal-footer">
+            <button id="btn-modal-detail-close-bottom" class="btn-secondary">关闭</button>
+          </div>
+        </div>
+      </div>
+      <div id="page-optimize" class="page">
+        <h2>MuMu 优化</h2>
+        <div class="optimize-topbar">
+          <button id="btn-optimize-start" class="btn-primary">开始优化</button>
+          <button id="btn-optimize-cancel" class="btn-secondary">撤销优化</button>
+        </div>
+        <div class="optimize-accordion" id="optimize-accordion">
+          <!-- 优化项由 JS 动态生成 -->
+        </div>
+      </div>
+      <div id="page-mumu-info" class="page">
+        <div class="mumu-info-header">
+          <h2>MuMu 模拟器信息</h2>
+          <button id="btn-mumu-refresh" class="btn-primary">刷新信息</button>
+        </div>
+        <div id="mumu-info-content" class="mumu-info-content">
+          <div class="mumu-info-loading">加载中...</div>
+        </div>
+      </div>
+      <div id="page-logs" class="page">
+        <h2>日志</h2>
+        <div class="log-actions-top">
+          <button id="btn-refresh-logs" class="btn-secondary">刷新日志</button>
+          <button id="btn-clear-logs" class="btn-secondary">清空日志</button>
+        </div>
+        <div class="log-container">
+          <div class="log-section">
+            <div id="merged-logs" class="log-box"></div>
+          </div>
+        </div>
+      </div>
+      <div id="page-settings" class="page">
+        <h2>设置</h2>
+        <div class="form-group">
+          <label for="settings-data-dir">数据存储目录</label>
+          <div class="combo-box">
+            <select id="settings-data-dir-mode" class="form-select combo-select">
+              <option value="appdata">AppData</option>
+              <option value="exe_dir">运行目录</option>
+              <option value="custom">自定义路径</option>
+            </select>
+            <div id="settings-data-dir-custom-group" class="combo-input-group" style="display:none">
+              <input type="text" id="settings-data-dir-custom" class="form-input combo-input"
+                placeholder="输入自定义路径" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="settings-log-path">日志保存路径</label>
+          <input type="text" id="settings-log-path" class="form-input" value="./log" />
+        </div>
+        <div class="form-group">
+          <label for="settings-download-path">下载保存路径</label>
+          <input type="text" id="settings-download-path" class="form-input" value="./download" />
+        </div>
+        <div class="form-group">
+          <label for="settings-install-dir">默认安装目录</label>
+          <input type="text" id="settings-install-dir" class="form-input" value="D:\Program Files\Netease\MuMu" />
+        </div>
+        <div class="form-group">
+          <label class="toggle-label">
+            <span class="toggle-text">启动时请求管理员权限</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="settings-admin-elevation" />
+              <span class="toggle-slider"></span>
+            </label>
+          </label>
+          <div id="admin-status-box" class="admin-status-box">
+            <span class="admin-status-label">当前权限状态：</span>
+            <span id="admin-status-value" class="admin-status-value">检测中</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="settings-aria2-connections">aria2 连接数</label>
+          <input type="number" id="settings-aria2-connections" class="form-input-number" value="5" min="1" max="16" step="1" />
+        </div>
+        <div class="form-group">
+          <label for="settings-aria2-split">aria2 分片数</label>
+          <input type="number" id="settings-aria2-split" class="form-input-number" value="5" min="1" max="16" step="1" />
+        </div>
+        <div class="form-group">
+          <label class="toggle-label">
+            <span class="toggle-text">安装成功后自动删除安装包</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="settings-auto-delete-installer" />
+              <span class="toggle-slider"></span>
+            </label>
+          </label>
+        </div>
+        <div class="form-group">
+          <label class="toggle-label">
+            <span class="toggle-text">自动刷新 MuMu 信息</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="settings-auto-refresh-mumu" />
+              <span class="toggle-slider"></span>
+            </label>
+          </label>
+        </div>
+        <div class="form-actions">
+          <button id="btn-save-settings" class="btn-primary">保存设置</button>
+        </div>
+      </div>
+      <div id="page-help" class="page">
+        <h2>帮助</h2>
+
+        <!-- 帮助类型 Tab 切换 -->
+        <div class="help-tabs">
+          <button class="help-tab active" data-help-tab="mutools">MuTools 文档</button>
+          <button class="help-tab" data-help-tab="official">官方文档</button>
+          <button class="help-tab" data-help-tab="support">官方客服</button>
+        </div>
+
+        <!-- MuTools 文档面板 -->
+        <div id="help-panel-mutools" class="help-panel active">
+          <div class="help-search-bar">
+            <input type="text" id="help-search-input" class="form-input" placeholder="搜索 MuTools 帮助文档" />
+            <button id="help-search-clear" class="help-search-clear" style="display:none">&times;</button>
+          </div>
+          <div class="help-categories" id="help-categories"></div>
+          <div class="help-faq-list" id="help-faq-list"></div>
+          <div class="help-no-results" id="help-no-results" style="display:none">
+            <p>没有找到匹配的文档</p>
+          </div>
+        </div>
+
+        <!-- 官方文档面板 -->
+        <div id="help-panel-official" class="help-panel">
+          <div id="help-placeholder-official" class="help-placeholder">
+            <h3 class="help-placeholder-title">MuMu 官方文档</h3>
+            <div class="help-placeholder-actions">
+              <button class="btn-primary help-open-btn" data-help-open="official" data-help-mode="embed">在 MuTools 内查看</button>
+              <button class="btn-secondary help-open-btn" data-help-open="official" data-help-mode="browser">在浏览器中打开</button>
+            </div>
+          </div>
+          <div id="help-iframe-wrap-official" class="help-iframe-container" style="display:none">
+            <iframe
+              id="help-iframe-official"
+              frameborder="0"
+              class="help-iframe"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- 官方客服面板 -->
+        <div id="help-panel-support" class="help-panel">
+          <div id="help-placeholder-support" class="help-placeholder">
+            <h3 class="help-placeholder-title">MuMu 官方客服</h3>
+            <div class="help-placeholder-actions">
+              <button class="btn-primary help-open-btn" data-help-open="support" data-help-mode="embed">在 MuTools 内查看</button>
+              <button class="btn-secondary help-open-btn" data-help-open="support" data-help-mode="browser">在浏览器中打开</button>
+            </div>
+          </div>
+          <div id="help-iframe-wrap-support" class="help-iframe-container" style="display:none">
+            <iframe
+              id="help-iframe-support"
+              frameborder="0"
+              class="help-iframe"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+      <div id="page-about" class="page">
+        <h2>关于</h2>
+        <div class="about-info">
+          <div class="about-item">
+            <span class="about-label">版本号</span>
+            <span class="about-value about-version" id="about-version">0.1.0 - Preview</span>
+          </div>
+          <div class="about-item">
+            <span class="about-label">构建方式</span>
+            <span class="about-value">Tauri v2</span>
+          </div>
+          <div class="about-item">
+            <span class="about-label">特别鸣谢</span>
+            <span class="about-value">晚安 | Razgriz | piedge</span>
+          </div>
+          <div class="about-item">
+            <span class="about-label">开发者</span>
+            <span class="about-value">pipicat613</span>
+          </div>
+        </div>
+
+        <div class="about-actions">
+          <button id="btn-about-disclaimer" class="btn-secondary">免责声明</button>
+          <button id="btn-about-changelog" class="btn-secondary">更新历史</button>
+        </div>
+      </div>
+
+      <!-- 免责声明模态框 -->
+      <div id="modal-disclaimer-overlay" class="modal-overlay" style="display:none">
+        <div class="modal modal-about">
+          <div class="modal-header">
+            <h3>免责声明</h3>
+            <button id="btn-disclaimer-close" class="modal-close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="about-disclaimer">
+              <p>本作品（包括但不限于补丁、修改、优化脚本、解密分析等）按“学习与研究”之有限许可向您提供。您必须在下载后的24个小时之内，从您的电脑中彻底删除上述内容。如有侵权内容请与作者联系处理。任何商业用途、非法用途或超出合理研究范围之使用，均视为无授权；由此产生的法律责任由行为人自行承担，与作者无关。本作品禁止售卖、禁止二次分发、禁止非授权转载。本作品按“现状”提供，不提供任何明示或默示担保。因使用或无法使用本作品导致的任何直接、间接、偶然、特殊或后续损失，作者不承担任何赔偿义务。作者可通过各种渠道发布更新，若您继续使用即视为接受新版协议。</p>
+              <p>使用即表示您已阅读并完全同意上述条款。</p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="btn-disclaimer-close-bottom" class="btn-secondary">关闭</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 更新历史模态框 -->
+      <div id="modal-changelog-overlay" class="modal-overlay" style="display:none">
+        <div class="modal modal-about">
+          <div class="modal-header">
+            <h3>更新历史</h3>
+            <button id="btn-changelog-close" class="modal-close">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="about-changelog-nav">
+              <button id="btn-changelog-prev" class="btn-secondary btn-sm" disabled>◀ 上一个</button>
+              <span id="changelog-counter" class="changelog-counter"></span>
+              <button id="btn-changelog-next" class="btn-secondary btn-sm" disabled>下一个 ▶</button>
+            </div>
+            <div class="about-changelog-scroll">
+              <div class="about-changelog" id="about-changelog">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button id="btn-changelog-close-bottom" class="btn-secondary">关闭</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+
+</html>
