@@ -151,7 +151,7 @@ class DescGenerator:
                     self.builder.set(desc_info["builder"])
                     self.version.set(desc_info["display_version"])
             else:
-                messagebox.showwarning("警告", f"读取 DESC 文件失败：{first_desc}\n可能文件损坏或格式不正确。")
+                messagebox.showwarning("Warn", f"读取 DESC 文件失败：{first_desc}\n可能文件损坏或格式不正确。")
 
         if not self.files_info:
             messagebox.showwarning("Error", "文件夹中没有可处理的文件")
