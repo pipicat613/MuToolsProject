@@ -88,6 +88,21 @@ fn check_hosts_blocked(domain: &str) -> Result<bool, String> {
     Ok(stdout.contains("127.0.0.1"))
 }
 
+fn run_netsh(args: &[&str]) -> Result<String, String> {
+    let output = Command::new("netsh")
+        .args(args)
+        .creation_flags(CREATE_NO_WINDOW)
+        .output()
+        .map_err(|e| format!("执行 netsh 失败: {}", e))?;
+    let stdout = decode_windows_output(&output.stdout);
+    if !output.status.success() {
+        let stderr = decode_windows_output(&output.stderr);
+        return Err(format!("netsh 执行失败: {}\n输出: {}", stderr, stdout));
+    }
+    Ok(stdout)
+}
+
+
 fn get_install_dir_from_info(info: &MuMuInfo) -> Result<String, String> {
     info.install_dir
         .clone()
@@ -147,6 +162,34 @@ pub async fn unblock_update_domains() -> Result<String, String> {
     } else {
         Ok("更新域名已恢复".to_string())
     }
+}
+
+// 防火墙规则
+
+#[tauri::command]
+pub fn add_firewall_rule_1() -> Result<String, String> {
+    let info = get_mumu_info()?;
+    let install_dir = get_install_dir_from_info(&info)?;
+    let program = format!(r"{}\shell\MuMuPlayer.exe", install_dir);
+    let output = run_netsh(&[
+        "advfirewall", "firewall", "add", "rule",
+        "name=MuMuADBlock1",
+        r#"description=Mutools创建的防火墙规则1，用于阻止消息广告"#,
+        "dir=out",
+        "action=block",
+        &format!("program={}", program),
+        "remoteip=42.186.241.52,42.186.110.59",
+        "enable=yes",
+    ])?;
+    Ok(format!("防火墙规则1已添加\n{}", output))
+}
+
+#[tauri::command]
+pub fn remove_firewall_rule_1() -> Result<String, String> {
+    let output = run_netsh(&[
+        "advfirewall", "firewall", "delete", "rule", "name=MuMuADBlock1",
+    ])?;
+    Ok(format!("防火墙规则1已删除\n{}", output))
 }
 
 // 禁用启动图
@@ -298,6 +341,63 @@ pub fn import_data_package(path: String) -> Result<String, String> {
 #[tauri::command]
 pub fn undo_import_data_package() -> Result<String, String> {
     Ok("无法自动判断使用了 Data 优化包的多开实例，请手动删除相关实例".to_string())
+}
+
+// 防火墙规则
+
+#[tauri::command]
+pub fn add_firewall_rule_2() -> Result<String, String> {
+    let info = get_mumu_info()?;
+    let install_dir = get_install_dir_from_info(&info)?;
+
+    let remote_ip = "42.186.25.77,115.236.122.147,117.147.201.42,101.71.7.42";
+
+    // 规则
+    let program1 = r"%ProgramFiles%\MuMuVMMVbox\Hypervisor\MuMuVMMHeadless.exe".to_string();
+    let program1_expanded = expand_environment_path(&program1)?;
+    let output1 = run_netsh(&[
+        "advfirewall", "firewall", "add", "rule",
+        "name=MuMuADBlock2",
+        r#"description=Mutools create from mumu.nie.netease.com"#,
+        "dir=out",
+        "action=block",
+        &format!("program={}", program1_expanded),
+        &format!("remoteip={}", remote_ip),
+        "enable=yes",
+    ])?;
+
+    // 规则
+    let program2 = format!(r"{}\nx_device\12.0\hypervisor\MuMuVMMHeadless.exe", install_dir);
+    let output2 = run_netsh(&[
+        "advfirewall", "firewall", "add", "rule",
+        "name=MuMuADBlock3",
+        r#"description=Mutools create from mumu.nie.netease.com"#,
+        "dir=out",
+        "action=block",
+        &format!("program={}", program2),
+        &format!("remoteip={}", remote_ip),
+        "enable=yes",
+    ])?;
+
+    Ok(format!("防火墙规则2已添加\n[规则1]\n{}\n[规则2]\n{}", output1, output2))
+}
+
+#[tauri::command]
+pub fn remove_firewall_rule_2() -> Result<String, String> {
+    let output1 = run_netsh(&[
+        "advfirewall", "firewall", "delete", "rule", "name=MuMuADBlock2",
+    ])?;
+    let output2 = run_netsh(&[
+        "advfirewall", "firewall", "delete", "rule", "name=MuMuADBlock3",
+    ])?;
+    Ok(format!("防火墙规则2已删除\n[规则1]\n{}\n[规则2]\n{}", output1, output2))
+}
+
+fn expand_environment_path(path: &str) -> Result<String, String> {
+    // Best-effort expansion of %ProgramFiles%
+    let program_files = std::env::var("ProgramFiles")
+        .map_err(|e| format!("无法获取 ProgramFiles 环境变量: {}", e))?;
+    Ok(path.replace("%ProgramFiles%", &program_files))
 }
 
 // 禁用/恢复 MuMuPlayerUpdater.exe
