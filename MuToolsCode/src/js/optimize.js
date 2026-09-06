@@ -5,6 +5,40 @@ const { invoke } = window.__TAURI__.core;
 
 const optimizeGroups = [
   {
+    id: "special-edition",
+    title: "仿专版/海外版修改",
+    items: [
+      {
+        id: "overlay-4x",
+        title: "[4.x]仿专版修改",
+        command: "apply_overlay_package",
+        undoCommand: "undo_overlay_package",
+        needsResource: "overlay",
+        pros: ["修改为专版，解锁了专版模拟器功能限制，体积小，功能强大，去除了搜索栏"],
+        cons: ["可能对旧版data数据有兼容性问题，需要重新新建多开"],
+        notes: ["提取与修改专版模拟器的overlay文件制成，overlay修改对所有多开有效"],
+      },
+      {
+        id: "fchannel-5x",
+        title: "[5.x][6.x]版本仿专版修改",
+        command: "apply_fchannel",
+        undoCommand: "undo_fchannel",
+        pros: ["修改为专版，几乎不影响原版体验"],
+        cons: [],
+        notes: ["修改安装配置信息，普通版仅修改此参数不会自动下载游戏"],
+      },
+      {
+        id: "patch-vdi-overseas",
+        title: "[5.x][6.x]修改system.vdi",
+        command: "patch_system_vdi_overseas",
+        undoCommand: "undo_patch_system_vdi_overseas",
+        pros: ["修改system.vdi添加海外版标识"],
+        cons: ["将会临时占用1-2G内存资源"],
+        notes: ["直接在system.vdi中修改build.prod"],
+      }
+    ],
+  },
+  {
     id: "startup-ad",
     title: "开屏广告",
     items: [
@@ -41,15 +75,6 @@ const optimizeGroups = [
         cons: ["无法使用官网下载更新、在线安装包"],
         notes: ["不会影响模拟器内部网络环境"],
       },
-      {
-        id: "firewall-message",
-        title: "[废弃]防火墙禁用连接",
-        command: "add_firewall_rule_1",
-        undoCommand: "remove_firewall_rule_1",
-        pros: ["取消消息中心广告"],
-        cons: ["无法使用游戏中心部分功能"],
-        notes: ["仅禁用MuMuPlayer.exe连接广告服务器IP"],
-      },
     ],
   },
   {
@@ -65,15 +90,6 @@ const optimizeGroups = [
         pros: ["取消模拟器桌面广告"],
         cons: ["多开应用的图标无法显示在桌面，可通多应用多开软件进入"],
         notes: [],
-      },
-      {
-        id: "firewall-desktop",
-        title: "[废弃]防火墙禁用连接",
-        command: "add_firewall_rule_2",
-        undoCommand: "remove_firewall_rule_2",
-        pros: ["取消模拟器桌面广告、内置的游戏中心"],
-        cons: ["无法使用谷歌安装器、游戏加速、虚拟定位、获取默认键位"],
-        notes: ["仅禁用VMMHeadless软件连接，对于获取android_id异常，可以提前启动模拟器，并尝试获取android_id"],
       },
     ],
   },
@@ -99,40 +115,6 @@ const optimizeGroups = [
         cons: ["无法体验新版"],
         notes: ["把MuMuPlayerUpdater.exe修改为MuMuPlayerUpdater.exe.bak"],
       },
-    ],
-  },
-  {
-    id: "special-edition",
-    title: "仿专版/海外版修改",
-    items: [
-      {
-        id: "overlay-4x",
-        title: "[4.x]仿专版修改",
-        command: "apply_overlay_package",
-        undoCommand: "undo_overlay_package",
-        needsResource: "overlay",
-        pros: ["修改为专版，解锁了专版模拟器功能限制，体积小，功能强大，去除了搜索栏"],
-        cons: ["可能对旧版data数据有兼容性问题，需要重新新建多开"],
-        notes: ["提取与修改专版模拟器的overlay文件制成，overlay修改对所有多开有效"],
-      },
-      {
-        id: "fchannel-5x",
-        title: "[5.x][6.x]版本仿专版修改",
-        command: "apply_fchannel",
-        undoCommand: "undo_fchannel",
-        pros: ["修改为专版，几乎不影响原版体验"],
-        cons: [],
-        notes: ["修改安装配置信息，普通版仅修改此参数不会自动下载游戏"],
-      },
-      {
-        id: "patch-vdi-overseas",
-        title: "[5.x][6.x]修改system.vdi",
-        command: "patch_system_vdi_overseas",
-        undoCommand: "undo_patch_system_vdi_overseas",
-        pros: ["修改system.vdi添加海外版标识"],
-        cons: ["将会临时占用1-2G内存资源"],
-        notes: ["直接在system.vdi中修改build.prod"],
-      }
     ],
   },
   {
