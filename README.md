@@ -21,6 +21,10 @@
 - **MuMu 信息** – 检测并展示模拟器信息
 - **帮助中心** – 支持内嵌打开官方文档与客服页面
 
+## 资源包下载
+
+- 前往[MuToolsResource](https://github.com/pipicat613/MuToolsResource)查看
+
 ## 演示视频
 
 [点击观看演示视频](https://www.bilibili.com/video/BV1JPtA6LEaA/)

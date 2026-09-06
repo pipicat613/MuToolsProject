@@ -31,7 +31,6 @@ MuToolsCode/.vite/
 
 /Tools_desc_generator/dist
 /Tools_portable_builder/dist
-/MuToolsResource/
 
 # Python
 __pycache__/
