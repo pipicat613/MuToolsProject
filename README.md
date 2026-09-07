@@ -25,10 +25,6 @@
 
 - 前往[MuToolsResource](https://github.com/pipicat613/MuToolsResource)查看
 
-## 演示视频
-
-[点击观看演示视频](https://www.bilibili.com/video/BV1JPtA6LEaA/)
-
 ## 技术栈
 
 | 模块 | 技术 |
