@@ -339,8 +339,25 @@ function initChangelogModal() {
   }
 }
 
+function initGithubButton() {
+  const btn = document.getElementById("btn-about-github");
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    const url = "https://github.com/pipicat613/MuToolsProject";
+    if (window.__TAURI__ && window.__TAURI__.opener) {
+      window.__TAURI__.opener.openUrl(url).catch(err => {
+        console.error("无法打开 GitHub 地址:", err);
+      });
+    } else {
+      window.open(url, "_blank");
+    }
+  });
+}
+
 export function initAboutPage() {
   initDisclaimerModal();
   loadChangelogData();
   initChangelogModal();
+  initGithubButton();
 }
