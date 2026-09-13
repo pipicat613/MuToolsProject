@@ -11,7 +11,7 @@ const helpLoadedIframes = { official: false, support: false };
 
 const helpFaqData = [
   {
-    category: "常见问题",
+    category: "安装问题",
     question: "安装失败怎么办？",
     answer: `1. 查看 <strong>日志</strong> 页面中的错误信息<br>
 2. 确保安装目录有充足的存储空间<br>
@@ -20,10 +20,33 @@ const helpFaqData = [
 5. 联系 <strong>官方客服</strong> 以寻求帮助`
   },
   {
+    category: "优化问题",
+    question: "我该选择哪个优化方案？",
+    answer: `推荐使用 仿专版/海外版优化 + 修改startupImage文件夹`
+  },
+  {
+    category: "优化问题",
+    question: "导入data包失败怎么解决？",
+    answer: `请确认模拟器版本在V4.0.0.3179及以上，过低版本暂不支持调用MuMuManager`
+  },
+  {
+    category: "安装问题",
+    question: "请求下载链接失败怎么办？",
+    answer: `请求API时会走系统代理<br>
+1. 请确认未使用host优化方案，如有请撤销优化<br>
+2. 请确认host文件未重定向API地址至127.0.0.1或其他无法访问的地址<br>
+3. 请确认已关闭其他代理工具`
+  },
+  {
     category: "常见问题",
     question: "为什么需要管理员权限？",
     answer: `MuTools 的 <strong>大量功能</strong> 需要管理员权限才能正常运行<br>
 非特殊情况请务必给予软件管理员权限`
+  },
+  {
+    category: "常见问题",
+    question: "如何安装资源包？",
+    answer: `MuTools的 项目地址README.md 里有相关链接`
   },
   {
     category: "常见问题",
@@ -34,7 +57,7 @@ const helpFaqData = [
 4.联系 <strong>官方客服</strong> 以寻求帮助`
   },
   {
-    category: "常见问题",
+    category: "安装问题",
     question: "MuMu模拟器安装卡98%怎么办？",
     answer: `安装进度条是模拟的，卡98%意味着安装未完成`
   }
