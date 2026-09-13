@@ -185,3 +185,14 @@ pub fn get_auto_delete_installer() -> Result<bool, String> {
     let config = read_config();
     Ok(config.auto_delete_installer)
 }
+
+/// 检测默认安装目录：存在 D 盘则默认 D 盘，否则默认 C 盘
+#[tauri::command]
+pub fn get_default_install_dir() -> Result<String, String> {
+    let d_drive = std::path::Path::new("D:\\");
+    if d_drive.exists() {
+        Ok("D:\\Program Files\\Netease\\MuMu".to_string())
+    } else {
+        Ok("C:\\Program Files\\Netease\\MuMu".to_string())
+    }
+}

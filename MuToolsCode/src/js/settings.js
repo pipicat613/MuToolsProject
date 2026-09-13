@@ -11,7 +11,6 @@ export function loadSettings() {
       const settings = JSON.parse(saved);
       document.getElementById("settings-log-path").value = settings.logPath || "./log";
       document.getElementById("settings-download-path").value = settings.downloadPath || "./download";
-      document.getElementById("settings-install-dir").value = settings.installDir || "D:\\Program Files\\Netease\\MuMu";
 
       const dataDirMode = settings.dataDirMode || "appdata";
       const dataDirCustom = settings.dataDirCustom || "";
@@ -60,7 +59,6 @@ async function loadAutoDeleteConfigFromBackend() {
 export function saveSettings() {
   const logPath = document.getElementById("settings-log-path").value.trim();
   const downloadPath = document.getElementById("settings-download-path").value.trim();
-  const installDir = document.getElementById("settings-install-dir").value.trim();
   const dataDirMode = document.getElementById("settings-data-dir-mode").value;
   const dataDirCustom = document.getElementById("settings-data-dir-custom").value.trim();
   const adminElevation = document.getElementById("settings-admin-elevation").checked;
@@ -69,7 +67,7 @@ export function saveSettings() {
   const autoDeleteInstaller = document.getElementById("settings-auto-delete-installer").checked;
   const autoRefreshMuMu = document.getElementById("settings-auto-refresh-mumu").checked;
   const settings = {
-    logPath, downloadPath, installDir, dataDirMode, dataDirCustom,
+    logPath, downloadPath, dataDirMode, dataDirCustom,
     adminElevation, aria2MaxConnections, aria2Split, autoDeleteInstaller, autoRefreshMuMu
   };
   localStorage.setItem("mutools_settings", JSON.stringify(settings));
@@ -78,9 +76,6 @@ export function saveSettings() {
   invoke("save_admin_elevation", { enabled: adminElevation }).catch(e => console.error("保存管理员提权设置失败:", e));
   invoke("save_aria2_config", { maxConnections: aria2MaxConnections, split: aria2Split }).catch(e => console.error("保存 aria2 配置失败:", e));
   invoke("save_auto_delete_installer", { enabled: autoDeleteInstaller }).catch(e => console.error("保存自动删除设置失败:", e));
-
-  document.getElementById("install-dir").value = installDir;
-
   // 自动刷新设置变更
   onAutoRefreshSettingChanged();
 

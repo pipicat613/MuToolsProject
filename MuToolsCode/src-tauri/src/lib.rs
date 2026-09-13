@@ -86,6 +86,7 @@ pub fn run() {
             config::get_aria2_config,
             config::save_auto_delete_installer,
             config::get_auto_delete_installer,
+            config::get_default_install_dir,
             mumu_info::get_mumu_info,
             optimize::block_update_domains,
             optimize::unblock_update_domains,

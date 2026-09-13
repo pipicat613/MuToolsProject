@@ -43,14 +43,16 @@ window.addEventListener("DOMContentLoaded", () => {
     addLog(`数据目录: ${dataDir}`);
   }).catch(() => {});
 
-  // 从设置恢复安装目录
-  const savedSettings = localStorage.getItem("mutools_settings");
-  if (savedSettings) {
-    try {
-      const s = JSON.parse(savedSettings);
-      document.getElementById("install-dir").value = s.installDir || "D:\\Program Files\\Netease\\MuMu";
-    } catch (e) {}
-  }
+  // 启动时自动检测默认安装目录
+  invoke("get_default_install_dir").then((dir) => {
+    const installDirEl = document.getElementById("install-dir");
+    if (installDirEl) installDirEl.value = dir;
+    addLog(`默认安装目录: ${dir}`);
+  }).catch((e) => {
+    console.error("检测默认安装目录失败:", e);
+    const installDirEl = document.getElementById("install-dir");
+    if (installDirEl) installDirEl.value = "C:\\Program Files\\Netease\\MuMu";
+  });
 
   // 导航
   document.querySelectorAll(".nav-item").forEach((item) => {
